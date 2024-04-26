@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 150px;
+            padding: 0;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 5px;
+            margin: 60px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .page {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .box {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .box h3 {
+            color: #666;
+        }
+
+        .box p {
+            color: #777;
+        }
+
+        .box ul,
+        .box ol {
+            color: #777;
+            padding-left: 20px;
+        }
+
+        .box pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .box code {
+            color: #333;
+        }
+
+        .box pre code {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <button class="btn" onclick="showPage(1)">Shortest Job First</button>
+        <button class="btn" onclick="showPage(2)">Dining Philosophers</button>
+        <button class="btn" onclick="showPage(3)">C-LOOK Disk</button>
+        <button class="btn" onclick="showPage(4)">FIFO Page Replacement</button>
+    </div>
+
+    <div id="page1" class="page">
+        <h2>Shortest Job First (SJF) CPU Scheduling Algorithm</h2>
+        <!-- Content for SJF page -->
+        <h3>Definition</h3>
+        <div class="box1 box">
+
+            <p>The shortest job first (SJF) or shortest job next, is a scheduling policy that selects the waiting
+                process with the smallest execution time to execute next.
+            </p>
+        </div>
+        <h3>Characteristics of SJF Scheduling</h3>
+        <div class="box2 box">
+
+
+            <ul>
+                <li>Shortest Job first has the advantage of having a minimum average waiting time FCFS scheduling
+                    algorithms.
+                </li>
+                <li>It may cause starvation if shorter processes keep coming.
+                </li>
+                <li>It is practically infeasible as Operating System may not know burst times and therefore may not sort
+                    them. While it is not possible to predict execution time, several methods can be used to estimate
+                    the execution time for a job, such as a weighted average of previous execution times.
+                </li>
+                <li>SJF can be used in specialized environments where accurate estimates of running time are available.
+                </li>
+                <li>It is non preemptive, once a process is selected it run until it is blocked for an I/O or some other
+                    event or it is terminated.
+                </li>
+            </ul>
+        </div>
+        <h3>Algorithm</h3>
+        <div class="box3 box">
+
+
+            <ul>
+                <li>Sort all the processes according to the arrival time.
+                </li>
+                <li>Then select that process that has minimum arrival time and minimum Burst time.
+                </li>
+                <li>After completion of the process make a pool of processes that arrives afterward till the completion
+                    of the previous process and select that process among the pool which is having minimum Burst time.
+                </li>
+            </ul>
+        </div>
+        <h3>Process Scheduling Variables </h3>
+        <div class="box4 box">
+
+            <ol>
+                <li>Process ID: This variable uniquely identifies each process in the system. It serves as a unique
+                    identifier for each process.
+                </li>
+                <li>Arrival Time: This variable represents the time at which a process arrives in the ready queue,
+                    indicating when the process becomes available for execution.
+                </li>
+                <li>Burst Time: This variable indicates the amount of time required by a process to complete its
+                    execution once it begins running on the CPU. It represents the duration of CPU time needed by the
+                    process.
+                </li>
+                <li>Completion Time: This variable denotes the time at which the execution of a process completes. It
+                    signifies when the process finishes its execution and is ready to leave the system.
+                </li>
+                <li>Turnaround Time: This variable measures the total time taken by a process from its arrival in the
+                    system to its completion, including both the waiting time in the ready queue and the execution time
+                    on the CPU. It represents the total time a process spends in the system.
+                </li>
+                <li>Waiting Time: This variable represents the total time a process spends waiting in the ready queue,
+                    i.e., the time elapsed from when the process arrives until it begins its execution on the CPU. It
+                    quantifies the time a process remains in the ready queue before it gets CPU execution time.
+                </li>
+            </ol>
+        </div>
+        <h3>Code</h3>
+        <div class="box5 box">
+
+            <pre>
+      <code>
+        
+    #include <stdio.h>
+  
+      // Structure to represent a process
+      struct Process {
+          int pid;            // Process ID
+          int arrival_time;   // Arrival Time
+          int burst_time;     // Burst Time
+          int completion_time; // Completion Time
+          int turnaround_time; // Turnaround Time
+          int waiting_time;   // Waiting Time
+          int executed;       // Flag to track if process executed
+      };
+      
+      // Function to perform Shortest Job First scheduling
+      void SJF(struct Process proc[], int n) {
+          int time = 0;   // Current time
+          int total_burst = 0; // Total burst time of all processes
+      
+          // Calculate total burst time
+          for (int i = 0; i < n; i++)
+              total_burst += proc[i].burst_time;
+      
+          printf("Process Execution Order: ");
+      
+          // Execute processes until all are done
+          while (time < total_burst) {
+              int shortest_job = -1;  // Index of the shortest job
+              int shortest_burst = 999999;  // Initialize with a large value
+      
+              // Find the process with shortest burst time that has arrived
+              for (int i = 0; i < n; i++) {
+                  if (proc[i].arrival_time <= time && proc[i].burst_time < shortest_burst && proc[i].executed == 0) {
+                      shortest_job = i;
+                      shortest_burst = proc[i].burst_time;
+                  }
+              }
+      
+              if (shortest_job == -1) {
+                  time++; // If no process arrived yet, increment time
+                  continue;
+              }
+      
+              // Execute the shortest job
+              time += proc[shortest_job].burst_time; // Increment time by burst time of the process
+              proc[shortest_job].completion_time = time; // Record completion time
+              proc[shortest_job].turnaround_time = proc[shortest_job].completion_time - proc[shortest_job].arrival_time; // Calculate turnaround time
+              proc[shortest_job].waiting_time = proc[shortest_job].turnaround_time - proc[shortest_job].burst_time; // Calculate waiting time
+              proc[shortest_job].executed = 1; // Mark process as executed
+      
+              // Print the executed process
+              printf("P%d ", proc[shortest_job].pid);
+          }
+      
+          printf("\n");
+      
+          // Print table header
+          printf("--------------------------------------------------------------------\n");
+          printf("Process   Arrival Time   Burst Time   Finish Time   Waiting Time   Turnaround Time\n");
+          printf("--------------------------------------------------------------------\n");
+      
+          // Print process details
+          for (int i = 0; i < n; i++) {
+              printf("  P%-9d%-14d%-13d%-14d%-15d%d\n", proc[i].pid, proc[i].arrival_time, proc[i].burst_time, proc[i].completion_time, proc[i].waiting_time, proc[i].turnaround_time);
+          }
+      
+          // Calculate and print average waiting time
+          float total_waiting_time = 0;
+          for (int i = 0; i < n; i++) {
+              total_waiting_time += proc[i].waiting_time;
+          }
+          float avg_waiting_time = total_waiting_time / n;
+          printf("--------------------------------------------------------------------\n");
+          printf("Average Waiting Time: %.2f\n", avg_waiting_time);
+      
+          // Calculate and print average turnaround time
+          float total_turnaround_time = 0;
+          for (int i = 0; i < n; i++) {
+              total_turnaround_time += proc[i].turnaround_time;
+          }
+          float avg_turnaround_time = total_turnaround_time / n;
+          printf("Average Turnaround Time: %.2f\n", avg_turnaround_time);
+          printf("--------------------------------------------------------------------\n");
+      }
+      
+      int main() {
+          int n; // Number of processes
+          printf("Enter the number of processes: ");
+          scanf("%d", &n);
+      
+          struct Process proc[n]; // Array to store processes
+      
+          // Input process details
+          for (int i = 0; i < n; i++) {
+              printf("Enter Arrival Time and Burst Time for Process P%d: ", i + 1);
+              scanf("%d %d", &proc[i].arrival_time, &proc[i].burst_time);
+              proc[i].pid = i + 1;
+              proc[i].executed = 0;
+          }
+      
+          // Perform Shortest Job First scheduling
+          SJF(proc, n);
+      
+          return 0;
+      } 
+      </code>
+     </pre>
+
+        </div>
+        <h3>Advantages of SJF</h3>
+
+        <div class="box6 box">
+
+            <ul>
+                <li>SJF is better than the First come first serve (FCFS) algorithm as it reduces the average waiting
+                    time.
+                </li>
+                <li>SJF is generally used for long term scheduling.
+                </li>
+                <li>It is suitable for the jobs running in batches, where run times are already known.
+                </li>
+            </ul>
+        </div>
+        <h3>Disadvantages of SJF</h3>
+        <div class="box7 box">
+
+
+            <ul>
+                <li> It is difficult to estimate time required to complete execution.
+                </li>
+                <li>Starvation is possible for long process. Long process may wait forever.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <h2>Dining Philosophers Problem With Semaphores</h2>
+        <div class="box1 box">
+            <ul>
+                <li>In this problem 5 philosophers sitting at a round table doing 2 things eating and thinking.
+                </li>
+                <li>While eating they are not thinking and while thinking they are not eating.
+                </li>
+                <li>Each philosopher has one plate that is total of 5 plates.
+                </li>
+                <li>There is a fork place between each pair of adjacent philosophers that is total of 5 forks.
+                </li>
+                <li>Each philosopher needs 2 forks to eat and each philosopher can only use the forks on his immediate
+                    left and immediate right.
+                </li>
+            </ul>
+        </div>
+        <h3>Code</h3>
+        <div class="box2 box">
+            <pre>
+    <code>
+import threading
+import time
+import random
+
+# Define the number of philosophers and forks
+num_philosophers = 5
+num_forks = num_philosophers
+
+# Define semaphores for the forks and the mutex
+forks = [threading.Semaphore(1) for i in range(num_forks)]
+mutex = threading.Semaphore(1)
+
+# Define the philosopher thread function
+def philosopher(index):
+	while True:
+		print(f"Philosopher {index} is thinking...")
+		time.sleep(random.randint(1, 5))
+		
+		mutex.acquire()
+		
+		left_fork_index = index
+		right_fork_index = (index + 1) % num_forks
+		
+		forks[left_fork_index].acquire()
+		forks[right_fork_index].acquire()
+		
+		mutex.release()
+		
+		print(f"Philosopher {index} is eating...")
+		time.sleep(random.randint(1, 5))
+		
+		forks[left_fork_index].release()
+		forks[right_fork_index].release()
+
+# Create a thread for each philosopher
+philosopher_threads = []
+for i in range(num_philosophers):
+	philosopher_threads.append(threading.Thread(target=philosopher, args=(i,)))
+	
+# Start the philosopher threads
+for thread in philosopher_threads:
+	thread.start()
+	
+# Wait for the philosopher threads to complete
+for thread in philosopher_threads:
+	thread.join()
+
+    </code>
+  </pre>
+        </div>
+        <h3>Problems with the Dining Philosopher</h3>
+        <div class="box3 box">
+            <ul>
+                <li>Deadlock Possibility: This solution may still suffer from deadlock if all philosophers
+                    simultaneously pick up their left chopstick and wait indefinitely for the right one, leading to a
+                    deadlock situation.
+                </li>
+                <li>Starvation: There's a possibility of starvation where a philosopher might not get access to both
+                    chopsticks if other philosophers consistently prioritize one of the chopsticks, preventing fair
+                    access to resources.
+                </li>
+                <li>Unequal Access: The solution doesn't ensure equal access to resources for all philosophers, as some
+                    may have better chances of acquiring both chopsticks compared to others.
+                </li>
+                <li>Complexity: Implementing and managing the solution can be complex, especially in distributed or
+                    multi-threaded environments, potentially leading to synchronization issues and bugs.
+                </li>
+                <li>Resource Waste: In cases where philosophers hold onto chopsticks for extended periods without
+                    eating, resources may be wasted unnecessarily, reducing overall system efficiency.
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div id="page3" class="page">
+        <h2>C-LOOK Disk Scheduling Algorithm</h2>
+<div class="box">
+    <p>C-LOOK Disk Scheduling Algorithm is an enhanced version of both SCAN as well as LOOK disk scheduling algorithms. This algorithm also uses the idea of wrapping the tracks as a circular cylinder as the C-SCAN Algorithm but the seek time is better than the C-SCAN algorithm. We know that C-SCAN is used to avoid starvation and services all the requests more uniformly, the same goes for C-LOOK. </p>
+
+  <p>In this algorithm, the head services request only in one direction(either left or right) until all the requests in this direction are not serviced and then jumps back to the farthest request in the other direction and services the remaining requests which gives a better uniform servicing as well as avoids wasting seek time for going till the end of the disk.</p>
+</div>
+<h2>Algorithm</h2>
+<div class="box">
+    <pre>
+Step 1: Let the Request array represents an array storing indexes of the tracks that have been requested in ascending order of their time of arrival and the head is the position of the disk head.
+Step 2: The initial direction in which the head is moving is given and it services in the same direction.
+Step 3: The head services all the requests one by one in the direction it is moving.
+Step 4: The head continues to move in the same direction until all the requests in this direction have been serviced.
+Step 5: While moving in this direction, calculate the absolute distance of the tracks from the head.
+Step 6: Increment the total seek count with this distance.
+Step 7: Currently serviced track position now becomes the new head position.
+Step 8: Go to step 5 until we reach the last request in this direction.
+Step 9: If we reach the last request in the current direction then reverse the direction and move the head in this direction until we reach the last request that is needed to be serviced in this direction without servicing the intermediate requests.
+Step 10: Reverse the direction and go to step 3 until all the requests have not been serviced.
+
+    </pre>
+</div>
+
+        <h2>code</h2>
+        <div class="box">
+<pre>
+    <code>
+        #include <stdio.h>
+            #include <stdlib.h>
+            
+            // Function to perform C-LOOK on the request
+            // array starting from the given head
+            void clook(int arr[], int size, int head) {
+                int seek_count = 0;
+                int distance, cur_track;
+                int left[size], right[size], left_size = 0, right_size = 0;
+                int seek_sequence[size * 2], seek_sequence_size = 0;
+            
+                // Tracks on the left of the
+                // head will be serviced when
+                // once the head comes back
+                // to the beginning (left end)
+                for (int i = 0; i < size; i++) {
+                    if (arr[i] < head)
+                        left[left_size++] = arr[i];
+                    if (arr[i] > head)
+                        right[right_size++] = arr[i];
+                }
+            
+                // Sorting left and right arrays
+                for (int i = 0; i < left_size - 1; i++) {
+                    for (int j = i + 1; j < left_size; j++) {
+                        if (left[i] > left[j]) {
+                            int temp = left[i];
+                            left[i] = left[j];
+                            left[j] = temp;
+                        }
+                    }
+                }
+                for (int i = 0; i < right_size - 1; i++) {
+                    for (int j = i + 1; j < right_size; j++) {
+                        if (right[i] > right[j]) {
+                            int temp = right[i];
+                            right[i] = right[j];
+                            right[j] = temp;
+                        }
+                    }
+                }
+            
+                // First service the requests
+                // on the right side of the
+                // head
+                for (int i = 0; i < right_size; i++) {
+                    cur_track = right[i];
+            
+                    // Appending current track to seek sequence
+                    seek_sequence[seek_sequence_size++] = cur_track;
+            
+                    // Calculate absolute distance
+                    distance = abs(cur_track - head);
+            
+                    // Increase the total count
+                    seek_count += distance;
+            
+                    // Accessed track is now new head
+                    head = cur_track;
+                }
+            
+                // Once reached the right end
+                // jump to the last track that
+                // is needed to be serviced in
+                // left direction
+                seek_count += abs(head - left[0]);
+                head = left[0];
+            
+                // Now service the requests again
+                // which are left
+                for (int i = 0; i < left_size; i++) {
+                    cur_track = left[i];
+            
+                    // Appending current track to seek sequence
+                    seek_sequence[seek_sequence_size++] = cur_track;
+            
+                    // Calculate absolute distance
+                    distance = abs(cur_track - head);
+            
+                    // Increase the total count
+                    seek_count += distance;
+            
+                    // Accessed track is now the new head
+                    head = cur_track;
+                }
+            
+                printf("Total number of seek operations = %d\n", seek_count);
+                printf("Seek Sequence is\n");
+                for (int i = 0; i < seek_sequence_size; i++) {
+                    printf("%d\n", seek_sequence[i]);
+                }
+            }
+            
+            // Driver code
+            int main() {
+                int size, head;
+            
+                printf("Enter the size of the array: ");
+                scanf("%d", &size);
+            
+                int arr[size];
+            
+                printf("Enter the elements of the array:\n");
+                for (int i = 0; i < size; i++) {
+                    scanf("%d", &arr[i]);
+                }
+            
+                printf("Enter the initial position of head: ");
+                scanf("%d", &head);
+            
+                printf("Initial position of head: %d\n", head);
+            
+                clook(arr, size, head);
+            
+                return 0;
+            }
+            
+    </code>
+</pre>
+</div>
+        <h2>Advantages</h2>
+        <div class="box">
+            <ul>
+                <li>It can provide better performance than the LOOK algorithm because it reduces the number of head movements required to access data on the disk.</li>
+                <li>It is relatively simple to implement and does not require a large amount of memory or processing power.</li>
+                <li>It can be efficient in terms of disk usage because it scans only the areas of the disk where data is located.</li>
+            </ul>
+
+        </div>
+        <h2>Disadvantages</h2>
+        <div class="box">
+            <uL>
+                <li>It may not be optimal in situations where there are large amounts of data to be read or written in one direction, as it could lead to a large number of requests being queued up in the opposite direction.</li>
+                <li>It may not be suitable for real-time systems where fast response times are critical, as it does not prioritize requests based on their urgency or importance.</li>
+                <li>It may lead to starvation of requests that are located far away from the current position of the disk head.</li>
+
+            </uL>
+
+        </div>
+
+
+
+
+    </div>
+
+    <div id="page4" class="page">
+        <h2>First In First Out Page Replacement Algorithm</h2>
+
+        <h3>Why Page Replacement Algorithms are use?</h3>
+        <div class="box1 box">
+            <ul>
+                <li>Page replacement algorithms manage memory efficiently in operating systems, particularly in virtual
+                    memory systems.</li>
+                <li>They determine which pages stay in physical memory and which are temporarily stored on disk.</li>
+                <li>These algorithms optimize memory utilization by prioritizing actively used pages while minimizing
+                    unnecessary page swaps.</li>
+                <li>By reducing page faults, they improve system performance and responsiveness.</li>
+                <li>Page replacement algorithms also ensure fair access to memory resources among competing processes,
+                    promoting system stability.</li>
+                <li>Page replacement algorithms play a crucial role in enhancing system performance by reducing the
+                    frequency of page faults and optimizing memory utilization.</li>
+            </ul>
+        </div>
+        <h3>Define FIFO Page Replacement Algorithm</h3>
+        <div class="box2 box">
+            <ul>
+                This is the simplest page replacement algorithm. In this algorithm, the operating system keeps track of
+                all pages in the memory in a queue, the oldest page is in the front of the queue. When a page needs to
+                be replaced page in the front of the queue is selected for removal.
+            </ul>
+        </div>
+
+        <h3>Algorithm</h3>
+        <div class="box3 box">
+            <ul>
+                <li>FIFO treats memory like a first-in, first-out queue.
+                </li>
+                <li>Pages are loaded into available frames (sections of RAM) as needed.
+                </li>
+                <li>When a page fault occurs and there are no empty frames, the oldest page (the one at the front of the
+                    queue) is evicted from memory to make space for the new page.
+                </li>
+            </ul>
+        </div>
+        <h3>code</h3>
+        <div class="box4 box">
+            <pre>
+    <code>
+        def fifo_page_replacement(num_frames, reference_string):
+    # Initialize an empty list representing the frames
+    frame_list = [None] * num_frames
+    # Initialize counters for page hits and page faults
+    page_faults = 0
+    page_hits = 0
+    # Initialize an empty list to store the frame table for each step
+    frame_table = []
+
+    # Iterate over each page in the reference string
+    for page in reference_string:
+        # Check if the page is already in a frame
+        if page in frame_list:
+            # If so, increment the page hit counter
+            page_hits += 1
+        else:
+            # If not, increment the page fault counter and replace the oldest page in the frame list
+            page_faults += 1
+            frame_list.pop(0)
+            frame_list.append(page)
+        # Append the current state of the frame list to the frame table
+        frame_table.append(frame_list.copy())
+
+    # Calculate page hit percentage and page fault percentage
+    page_hit_percentage = (page_hits * 100) / len(reference_string)
+    page_fault_percentage = 100 - page_hit_percentage
+
+    # Print the page replacement table
+    print("Page Replacement Table:")
+    print("------------------------")
+    print("Reference String: ", reference_string)
+    print("------------------------")
+    for i, frame in enumerate(frame_table):
+        print("Step {}: {}".format(i+1, frame))
+    print("------------------------")
+    # Print the calculated values
+    print("Number of Page Hits =", page_hits)
+    print("Number of Page Faults =", page_faults)
+    print("------------------------")
+    print("The Ratio of Page Hit to the Page Fault =", "{} : {}".format(page_hits, page_faults))
+    print("------------------------")
+    print("The Page Hit Percentage = {}%".format(page_hit_percentage))
+    print("The Page Fault Percentage = {}%".format(page_fault_percentage))
+
+    return page_faults
+
+# Example usage:
+num_frames = int(input("Enter number of frames: "))
+reference_string = list(map(int, input("Enter reference string separated by spaces: ").split()))
+
+page_faults = fifo_page_replacement(num_frames, reference_string)
+
+    </code>
+</pre>
+        </div>
+        <h3>Advantages:</h3>
+        <div class="box5 box">
+            <ul>
+                <li>Simplicity: FIFO is incredibly easy to understand and implement. It treats memory like a
+                    first-in, first-out queue, making the logic straightforward.</li>
+                <li>Fairness: Every page gets an equal chance. Pages are evicted based on their arrival time,
+                    preventing any bias towards specific pages.</li>
+            </ul>
+        </div>
+        <h3>Disadvantages:</h3>
+        <div class="box6 box">
+            <ul>
+                <li>Poor Performance for Unpredictable Access Patterns: If the program's memory access patterns are
+                    unpredictable, FIFO might not be optimal. It could evict frequently used pages, leading to more
+                    page faults and slower execution.</li>
+                <li>Belady's Anomaly: This is a critical drawback. In certain reference strings, increasing the
+                    number of available frames (memory) using FIFO can lead to more page faults. This
+                    counter-intuitive behavior happens because FIFO doesn't consider future page accesses. A
+                    recently used page might be evicted even if it's needed again soon.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageNumber) {
+            var pages = document.getElementsByClassName('page');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].style.display = 'none';
+            }
+            document.getElementById('page' + pageNumber).style.display = 'block';
+        }
+    </script>
+
+</body>
+
+</html>
